@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "project": "SKN AI teaching notebook image assets",
+  "assets": [
+    {
+      "path": "08_llm/08_langgraph/01_langgraph_basics/02_official_single_node_graph.png",
+      "sha256": "3cfb942b1d9b3c339b1b9e8cdc9ce9d9fc012b03f81e4466034e533b0d2d6ad1",
+      "bytes": 9505
+    },
+    {
+      "path": "08_llm/08_langgraph/01_langgraph_basics/04_official_checkpoints.png",
+      "sha256": "39d64211a3f742b66ccd5697c56e27cc8025dfcdeac55988125047c494d44427",
+      "bytes": 413212
+    },
+    {
+      "path": "08_llm/08_langgraph/01_langgraph_basics/05_hitl_interrupt_resume_flow.svg",
+      "sha256": "cdb468a70a5963218c89cc7c8f5af697bf10b4d89ebb0f9bd42c71418c6e9ae2",
+      "bytes": 8512
+    },
+    {
+      "path": "08_llm/08_langgraph/01_langgraph_basics/06_custom_state_flow.svg",
+      "sha256": "f19708022dca54180649dfdcdf7a016cc25a9dc8d15d4d145bee0bbba33bb28f",
+      "bytes": 5455
+    },
+    {
+      "path": "08_llm/08_langgraph/01_langgraph_basics/07_official_agent_harness.svg",
+      "sha256": "45d0130d89233a17e93e23df0294d39782cdbae0729a02e86440f3c7331578df",
+      "bytes": 2549
+    },
+    {
+      "path": "08_llm/08_langgraph/01_langgraph_basics/langchain_langgraph_relationship.png",
+      "sha256": "4a9f121dff6d5345f22ca3d0911a1adb389b219256d0515f8c915ed45836e9a3",
+      "bytes": 1097444
+    },
+    {
+      "path": "08_llm/08_langgraph/01_langgraph_basics/langgraph_official_agent_loop.png",
+      "sha256": "3b55a7cb52d55a50531d158158f98325aeff1d7d5a5cc26f23653ba3465e25a3",
+      "bytes": 22722
+    }
+  ]
+}
