@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">LangGraph Custom State와 Tool loop</title>
+  <desc id="desc">START에서 chatbot으로 진입하고 Tool 요청이 있으면 tools와 capture_tool_output을 거쳐 chatbot으로 돌아간다. messages, search_query, search_results가 서로 다른 방식으로 갱신된다.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#74c0fc"/>
+    </marker>
+    <marker id="update-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#fbbf24"/>
+    </marker>
+    <style>
+      .title { font: 700 30px -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif; fill: #f8fafc; }
+      .heading { font: 700 21px -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif; fill: #e2e8f0; }
+      .label { font: 600 18px -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif; fill: #f8fafc; }
+      .body { font: 16px -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif; fill: #cbd5e1; }
+      .code { font: 15px ui-monospace, SFMono-Regular, Menlo, monospace; fill: #bae6fd; }
+      .edge { stroke: #74c0fc; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+      .update { stroke: #fbbf24; stroke-width: 2.5; stroke-dasharray: 7 6; fill: none; marker-end: url(#update-arrow); }
+    </style>
+  </defs>
+
+  <rect width="1200" height="720" rx="24" fill="#07111f"/>
+  <text x="48" y="54" class="title">Custom State: 대화 기록과 업무 데이터를 함께 전달한다</text>
+
+  <rect x="42" y="92" width="388" height="574" rx="20" fill="#111c2e" stroke="#64748b" stroke-width="2"/>
+  <text x="68" y="132" class="heading">Custom State values</text>
+
+  <rect x="68" y="160" width="336" height="120" rx="14" fill="#172554" stroke="#60a5fa" stroke-width="2"/>
+  <text x="88" y="194" class="label">messages</text>
+  <text x="88" y="224" class="code">list[AnyMessage]</text>
+  <text x="88" y="254" class="body">add_messages reducer로 새 message 누적</text>
+
+  <rect x="68" y="306" width="336" height="120" rx="14" fill="#3b2f12" stroke="#fbbf24" stroke-width="2"/>
+  <text x="88" y="340" class="label">search_query</text>
+  <text x="88" y="370" class="code">str | None</text>
+  <text x="88" y="400" class="body">extract_keywords 결과로 교체</text>
+
+  <rect x="68" y="452" width="336" height="138" rx="14" fill="#3b2f12" stroke="#fbbf24" stroke-width="2"/>
+  <text x="88" y="486" class="label">search_results</text>
+  <text x="88" y="516" class="code">list[KakaoPlace] | None</text>
+  <text x="88" y="546" class="body">장소 JSON 문자열을 list로 변환</text>
+  <text x="88" y="570" class="body">한 뒤 새 값으로 교체</text>
+
+  <text x="476" y="113" class="heading">Graph 실행 경로</text>
+
+  <rect x="470" y="146" width="116" height="58" rx="29" fill="#153047" stroke="#38bdf8" stroke-width="2"/>
+  <text x="528" y="182" text-anchor="middle" class="label">START</text>
+
+  <rect x="684" y="136" width="196" height="78" rx="16" fill="#251a49" stroke="#a78bfa" stroke-width="2"/>
+  <text x="782" y="170" text-anchor="middle" class="label">chatbot</text>
+  <text x="782" y="195" text-anchor="middle" class="body">AIMessage 생성</text>
+  <path d="M586 175 H674" class="edge"/>
+
+  <polygon points="782,260 874,320 782,380 690,320" fill="#183149" stroke="#38bdf8" stroke-width="2"/>
+  <text x="782" y="314" text-anchor="middle" class="label">tool_calls?</text>
+  <text x="782" y="340" text-anchor="middle" class="body">tools_condition</text>
+  <path d="M782 214 V250" class="edge"/>
+
+  <rect x="950" y="291" width="170" height="62" rx="16" fill="#153b2c" stroke="#34d399" stroke-width="2"/>
+  <text x="1035" y="329" text-anchor="middle" class="label">END</text>
+  <path d="M874 320 H940" class="edge"/>
+  <text x="904" y="303" class="body">없음</text>
+
+  <rect x="675" y="430" width="214" height="86" rx="16" fill="#163b35" stroke="#34d399" stroke-width="2"/>
+  <text x="782" y="466" text-anchor="middle" class="label">tools</text>
+  <text x="782" y="492" text-anchor="middle" class="body">ToolMessage 생성</text>
+  <path d="M782 380 V420" class="edge"/>
+  <text x="797" y="406" class="body">있음</text>
+
+  <rect x="645" y="570" width="274" height="90" rx="16" fill="#3b2f12" stroke="#fbbf24" stroke-width="2"/>
+  <text x="782" y="606" text-anchor="middle" class="label">capture_tool_output</text>
+  <text x="782" y="632" text-anchor="middle" class="body">Tool 결과를 업무 key로 변환</text>
+  <path d="M782 516 V560" class="edge"/>
+
+  <path d="M645 615 C540 615 500 500 520 340 C535 235 595 176 674 176" class="edge"/>
+  <text x="486" y="490" class="body">부분 update 후</text>
+  <text x="486" y="514" class="body">chatbot 재호출</text>
+
+  <path d="M675 473 C570 455 500 385 414 232" class="update"/>
+  <text x="472" y="350" class="body" fill="#fde68a">AI·Tool message</text>
+
+  <path d="M645 604 C530 575 490 462 414 366" class="update"/>
+  <path d="M645 630 C520 660 470 598 414 522" class="update"/>
+  <text x="466" y="586" class="body" fill="#fde68a">Tool 이름에 따라 한 key 갱신</text>
+
+  <text x="462" y="695" class="body">파란 화살표: 실행 순서 · 노란 점선: State key update</text>
+</svg>

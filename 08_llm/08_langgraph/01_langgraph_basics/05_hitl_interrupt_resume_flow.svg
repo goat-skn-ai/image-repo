@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">LangGraph Human-in-the-loop 중단과 재개 흐름</title>
+  <desc id="desc">질문이 chatbot과 ToolNode를 거쳐 interrupt에서 중단되고, checkpointer가 thread 상태를 보존한 뒤 사람이 같은 thread에 Command resume 값을 보내 ToolMessage와 최종 답변으로 이어지는 흐름</desc>
+  <defs>
+    <marker id="arrow-navy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#213555"/>
+    </marker>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#E56B3E"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2D8C74"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#213555" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .title { font: 700 34px 'Apple SD Gothic Neo','Noto Sans KR',sans-serif; fill: #172238; }
+      .subtitle { font: 400 18px 'Apple SD Gothic Neo','Noto Sans KR',sans-serif; fill: #526176; }
+      .lane { font: 700 17px 'Apple SD Gothic Neo','Noto Sans KR',sans-serif; letter-spacing: 1px; }
+      .step { font: 700 16px 'Apple SD Gothic Neo','Noto Sans KR',sans-serif; fill: #ffffff; }
+      .box-title { font: 700 20px 'Apple SD Gothic Neo','Noto Sans KR',sans-serif; fill: #172238; }
+      .box-body { font: 400 16px 'Apple SD Gothic Neo','Noto Sans KR',sans-serif; fill: #43516A; }
+      .code { font: 600 15px ui-monospace,SFMono-Regular,Menlo,monospace; fill: #213555; }
+      .note-title { font: 700 17px 'Apple SD Gothic Neo','Noto Sans KR',sans-serif; fill: #213555; }
+      .note-body { font: 400 15px 'Apple SD Gothic Neo','Noto Sans KR',sans-serif; fill: #526176; }
+    </style>
+  </defs>
+
+  <rect width="1440" height="900" fill="#F7F9FC"/>
+  <text x="72" y="67" class="title">Human-in-the-loop: 자동 실행을 멈추고, 같은 thread에서 이어 간다</text>
+  <text x="72" y="101" class="subtitle">이 노트북의 실제 실행 경로 · 주황색은 중단, 초록색은 사람 입력 후 재개를 나타낸다.</text>
+
+  <rect x="56" y="140" width="1328" height="282" rx="24" fill="#EDF3FA"/>
+  <text x="82" y="175" class="lane" fill="#3E5F8A">첫 실행 · 자동 경로</text>
+
+  <g filter="url(#shadow)">
+    <rect x="82" y="205" width="245" height="142" rx="18" fill="#FFFFFF"/>
+    <circle cx="112" cy="234" r="17" fill="#3E5F8A"/>
+    <text x="112" y="240" text-anchor="middle" class="step">1</text>
+    <text x="140" y="241" class="box-title">질문 전달</text>
+    <text x="105" y="280" class="code">graph.invoke(...)</text>
+    <text x="105" y="311" class="box-body">config에 thread_id 포함</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="391" y="205" width="267" height="142" rx="18" fill="#FFFFFF"/>
+    <circle cx="421" cy="234" r="17" fill="#3E5F8A"/>
+    <text x="421" y="240" text-anchor="middle" class="step">2</text>
+    <text x="449" y="241" class="box-title">chatbot 판단</text>
+    <text x="414" y="280" class="code">AIMessage.tool_calls</text>
+    <text x="414" y="311" class="box-body">human_assist 호출 요청</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="722" y="205" width="267" height="142" rx="18" fill="#FFFFFF"/>
+    <circle cx="752" cy="234" r="17" fill="#3E5F8A"/>
+    <text x="752" y="240" text-anchor="middle" class="step">3</text>
+    <text x="780" y="241" class="box-title">ToolNode 실행</text>
+    <text x="745" y="280" class="code">human_assist(query)</text>
+    <text x="745" y="311" class="box-body">선택된 Tool을 실제 호출</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1053" y="205" width="277" height="142" rx="18" fill="#FFF4EE" stroke="#E56B3E" stroke-width="2"/>
+    <circle cx="1083" cy="234" r="17" fill="#E56B3E"/>
+    <text x="1083" y="240" text-anchor="middle" class="step">4</text>
+    <text x="1111" y="241" class="box-title">interrupt에서 중단</text>
+    <text x="1076" y="280" class="code">{"query": query}</text>
+    <text x="1076" y="311" class="box-body">호출자가 __interrupt__로 받음</text>
+  </g>
+
+  <line x1="327" y1="276" x2="385" y2="276" stroke="#213555" stroke-width="3" marker-end="url(#arrow-navy)"/>
+  <line x1="658" y1="276" x2="716" y2="276" stroke="#213555" stroke-width="3" marker-end="url(#arrow-navy)"/>
+  <line x1="989" y1="276" x2="1047" y2="276" stroke="#213555" stroke-width="3" marker-end="url(#arrow-navy)"/>
+
+  <rect x="191" y="372" width="1058" height="91" rx="18" fill="#E5EAF1" stroke="#AAB7C8" stroke-dasharray="7 6"/>
+  <text x="219" y="406" class="note-title">Checkpointer · 실행 상태를 저장하는 구성 요소</text>
+  <text x="219" y="437" class="note-body">checkpoint = 특정 시점의 StateSnapshot · thread_id = 저장하고 다시 찾는 열쇠 · 중단 중 snapshot.next에는 대기 Node가 남는다.</text>
+  <line x1="1188" y1="347" x2="1188" y2="369" stroke="#E56B3E" stroke-width="3" marker-end="url(#arrow-orange)"/>
+
+  <rect x="56" y="495" width="1328" height="288" rx="24" fill="#EAF7F2"/>
+  <text x="82" y="530" class="lane" fill="#2D8C74">사람 입력 · 재개 경로</text>
+
+  <g filter="url(#shadow)">
+    <rect x="82" y="560" width="260" height="147" rx="18" fill="#FFFFFF"/>
+    <circle cx="112" cy="589" r="17" fill="#2D8C74"/>
+    <text x="112" y="595" text-anchor="middle" class="step">5</text>
+    <text x="140" y="596" class="box-title">사람이 답변</text>
+    <text x="105" y="635" class="box-body">중단 요청을 읽고</text>
+    <text x="105" y="666" class="box-body">확인 결과를 입력</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="397" y="560" width="307" height="147" rx="18" fill="#FFFFFF"/>
+    <circle cx="427" cy="589" r="17" fill="#2D8C74"/>
+    <text x="427" y="595" text-anchor="middle" class="step">6</text>
+    <text x="455" y="596" class="box-title">같은 thread로 재개</text>
+    <text x="420" y="635" class="code">Command(resume={...})</text>
+    <text x="420" y="666" class="box-body">새 질문이 아닌 중단 값의 공급</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="759" y="560" width="266" height="147" rx="18" fill="#FFFFFF"/>
+    <circle cx="789" cy="589" r="17" fill="#2D8C74"/>
+    <text x="789" y="595" text-anchor="middle" class="step">7</text>
+    <text x="817" y="596" class="box-title">Tool 결과 생성</text>
+    <text x="782" y="635" class="code">interrupt() → dict</text>
+    <text x="782" y="666" class="box-body">data가 ToolMessage가 됨</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1080" y="560" width="250" height="147" rx="18" fill="#FFFFFF"/>
+    <circle cx="1110" cy="589" r="17" fill="#2D8C74"/>
+    <text x="1110" y="595" text-anchor="middle" class="step">8</text>
+    <text x="1138" y="596" class="box-title">chatbot 재판단</text>
+    <text x="1103" y="635" class="box-body">최종 AIMessage 생성</text>
+    <text x="1103" y="666" class="code">snapshot.next == ()</text>
+  </g>
+
+  <line x1="342" y1="633" x2="391" y2="633" stroke="#2D8C74" stroke-width="3" marker-end="url(#arrow-green)"/>
+  <line x1="704" y1="633" x2="753" y2="633" stroke="#2D8C74" stroke-width="3" marker-end="url(#arrow-green)"/>
+  <line x1="1025" y1="633" x2="1074" y2="633" stroke="#2D8C74" stroke-width="3" marker-end="url(#arrow-green)"/>
+
+  <path d="M 1190 463 C 1190 505, 553 494, 553 554" fill="none" stroke="#2D8C74" stroke-width="3" stroke-dasharray="8 7" marker-end="url(#arrow-green)"/>
+  <text x="767" y="488" text-anchor="middle" class="note-body">저장된 checkpoint를 같은 thread_id로 불러온다.</text>
+
+  <rect x="82" y="744" width="1248" height="95" rx="18" fill="#FFFFFF" stroke="#D3DAE5"/>
+  <text x="105" y="778" class="note-title">재개할 때 기억할 경계</text>
+  <text x="105" y="809" class="note-body">interrupt가 있는 Node는 처음부터 다시 실행될 수 있다. interrupt 이전의 저장·결제 같은 작업은 반복되어도 안전하게 설계한다.</text>
+
+  <text x="1358" y="873" text-anchor="end" class="note-body">LangGraph 공식 Interrupts·Checkpointers 문서 기반 교안용 재구성</text>
+</svg>
